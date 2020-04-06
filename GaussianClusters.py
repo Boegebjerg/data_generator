@@ -24,6 +24,10 @@ class GaussianClusters(Clusters):
         self.sim_matrix = self.dist_matrix_to_sim(self.dist_matrix)
         self.norm_sim_matrix = self.normalize_matrix(self.sim_matrix)
         self.norm_dist_matrix = self.normalize_matrix(self.dist_matrix)
+        self.sim_matrix_melt = self.matrix_melt(self.sim_matrix)
+        self.norm_sim_matrix_melt = self.matrix_melt(self.norm_sim_matrix)
+        self.dist_matrix_melt = self.matrix_melt(self.dist_matrix)
+        self.norm_dist_matrix_melt = self.matrix_melt(self.norm_dist_matrix)
 
 
     def initialize_settings(self):
@@ -48,6 +52,7 @@ class GaussianClusters(Clusters):
             cum_points += cluster_size
 
             cluster_settings[i]['size'] = cluster_size
+
         return cluster_settings
 
 
@@ -82,11 +87,13 @@ class GaussianClusters(Clusters):
 
 
     def save_data(self,path):
-        np.savetxt(path + 'sim_matrix.txt', self.sim_matrix, delimiter='\t', fmt='%f')
-        np.savetxt(path + 'dist_matrix.txt', self.dist_matrix, delimiter='\t', fmt='%f')
-        np.savetxt(path + 'norm_sim_matrix.txt', self.norm_sim_matrix, delimiter='\t', fmt='%f')
-        np.savetxt(path + 'norm_dist_matrix.txt', self.norm_dist_matrix, delimiter='\t', fmt='%f')
-        plt.savefig(path + 'graph.png')
-        plt.clf()
-        with open(path + 'settings.json', 'w') as f:
-            f.write(json.dumps(self.settings))
+        self.save_matrix(self.sim_matrix, 'sim_matrix.txt', path)
+        self.save_matrix(self.dist_matrix, 'dist_matrix.txt', path)
+        self.save_matrix(self.norm_sim_matrix, 'norm_sim_matrix.txt', path)
+        self.save_matrix(self.norm_dist_matrix, 'norm_dist_matrix.txt', path)
+        self.save_melt(self.sim_matrix_melt, 'sim_matrix_melt.txt', path)
+        self.save_melt(self.dist_matrix_melt, 'dist_matrix_melt.txt', path)
+        self.save_melt(self.norm_sim_matrix_melt, 'norm_sim_matrix_melt.txt', path)
+        self.save_melt(self.norm_dist_matrix_melt, 'norm_dist_matrix_melt.txt', path)
+        self.save_graph('graph.png', path)
+        self.save_settings(self.settings, 'settings.json', path)
